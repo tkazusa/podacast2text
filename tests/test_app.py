@@ -6,6 +6,7 @@ def test_get_route(test_client):
     THEN check the response is valid
     """
     response = test_client.get('/')
+    print(response.data)
     assert response.status_code == 200
 
 

@@ -1,10 +1,16 @@
 # -*- encoding: UTF-8 -*-
 import pytest
 
-import app
+from app import create_app
 
 
-@pytest.fixture(scope='module')
-def test_client():
+@pytest.fixture()
+def app():
+    app = create_app()
+    return app
+
+
+@pytest.fixture()
+def test_client(app):
     testing_client = app.test_client()
-    yield testing_client
+    return testing_client
