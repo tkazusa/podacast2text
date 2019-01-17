@@ -5,4 +5,4 @@
 ```
 pip install '.[test]'
 pytest
-'''
+```
