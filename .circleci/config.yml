@@ -5,25 +5,11 @@
 version: 2
 jobs:
   build:
-    docker:
-      # specify the version you desire here
-      # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
-      - image: circleci/python:3.6.1
-      
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
-
     working_directory: ~/podcast2text
-
+    docker:
+      - image: tkazusa/appengine-python37:latest
     steps:
       - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "requirements.txt" }}
 
       - run:
           name: install dependencies
@@ -32,23 +18,21 @@ jobs:
             . venv/bin/activate
             pip install -r requirements.txt
             pip install '.[test]'
-
-      - save_cache:
-          paths:
-            - ./venv
-          key: v1-dependencies-{{ checksum "requirements.txt" }}
         
-      # run tests!
-      # this example uses Django's built-in test-runner
-      # other common Python testing frameworks include pytest and nose
-      # https://pytest.org
-      # https://nose.readthedocs.io
       - run:
           name: run tests
           command: |
             . venv/bin/activate
             pytest
 
-      - store_artifacts:
-          path: test-reports
-          destination: test-reports
+      - run:
+          name: google auth
+          command: |
+            echo $DEV_SERVICE_ACCOUNT_KEY > /tmp/secret.json
+            gcloud auth activate-service-account $DEV_SERVICE_ACCOUNT_CLIENT_EMAIL --key-file /tmp/secret.json
+
+      - run:
+          name: deploy production
+          command: |
+            gcloud --quiet config set project $GOOGLE_PROJECT_ID
+            gcloud --quiet app deploy app/app.yaml
