@@ -1,4 +1,4 @@
 Flask==1.0.2
-google-cloud-strage==1.13.2
+google-cloud-storage==1.13.2
 google-cloud-speech==0.36.2
 pytest==3.5.0
