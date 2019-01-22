@@ -1,0 +1,36 @@
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+version: 2
+jobs:
+  build:
+    working_directory: ~/podcast2text
+    docker:
+      - image: tkazusa/appengine-python37:latest
+    steps:
+      - checkout
+
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
+            pip install '.[test]'
+        
+      - run:
+          name: run tests
+          command: |
+            . venv/bin/activate
+            pytest
+      - run:
+          name: google auth
+          command: |
+            echo $DEV_SERVICE_ACCOUNT_KEY > /tmp/secret.json
+            gcloud auth activate-service-account $DEV_SERVICE_ACCOUNT_CLIENT_EMAIL --key-file /tmp/secret.json
+      - run:
+          name: deploy production
+          command: |
+            gcloud --quiet config set project $GOOGLE_PROJECT_ID
+            gcloud --quiet app deploy app/app.yaml --project $GOOGLE_PROJECT_ID
