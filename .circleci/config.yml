@@ -20,18 +20,18 @@ jobs:
             pip3 install '.[test]'
         
       - run:
-          name: run tests
-          command: |
-            . venv/bin/activate
-            pytest
-
-      - run:
           name: google auth
           command: |
             echo $DEV_SERVICE_ACCOUNT_KEY > /tmp/secret.json
             ls
             ls /tmp
             gcloud auth activate-service-account $DEV_SERVICE_ACCOUNT_CLIENT_EMAIL --key-file /tmp/secret.json
+
+      - run:
+          name: run tests
+          command: |
+            . venv/bin/activate
+            pytest
 
       - run:
           name: deploy production
