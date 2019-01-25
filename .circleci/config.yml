@@ -24,11 +24,13 @@ jobs:
           command: |
             . venv/bin/activate
             pytest
+
       - run:
           name: google auth
           command: |
             echo $DEV_SERVICE_ACCOUNT_KEY > /tmp/secret.json
             gcloud auth activate-service-account $DEV_SERVICE_ACCOUNT_CLIENT_EMAIL --key-file /tmp/secret.json
+
       - run:
           name: deploy production
           command: |
