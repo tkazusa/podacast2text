@@ -29,6 +29,8 @@ jobs:
           name: google auth
           command: |
             echo $DEV_SERVICE_ACCOUNT_KEY > /tmp/secret.json
+            ls
+            ls /tmp
             gcloud auth activate-service-account $DEV_SERVICE_ACCOUNT_CLIENT_EMAIL --key-file /tmp/secret.json
 
       - run:
