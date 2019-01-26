@@ -11,19 +11,18 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
-
-def allowed_file(filename):
+def allowed_file(filename: str) -> str:
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def create_app():
+def create_app() -> type(Flask):
     app = Flask(__name__)
     app.config['JSON_AS_ASCII'] = False
     client = storage.Client()
 
     @app.route('/', methods=['GET', 'POST'])
-    def upload_file():
+    def upload_file() -> str:
         if request.method == 'POST':
             # check if the post request has the file part
             if 'file' not in request.files:
@@ -51,7 +50,7 @@ def create_app():
         '''
  
     @app.route('/uploads/<filename>')
-    def uploaded_file(filename):
+    def uploaded_file(filename) -> str:
         return send_from_directory(app.config['UPLOAD_FOLDER'],
                                    filename)
     return app
