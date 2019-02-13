@@ -1,4 +1,4 @@
-# -*- encoding: UTF-8 -*-
+# -*- coding: UTF-8 -*-
 import os
 from flask import Flask, flash, request, redirect, send_from_directory,  url_for
 from werkzeug.utils import secure_filename

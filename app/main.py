@@ -1,5 +1,4 @@
-# -*- encoding: UTF-8 -*-
-# from app import create_app
+# -*- coding: UTF-8 -*-
 from _app import create_app
 
 app = create_app()
