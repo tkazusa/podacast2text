@@ -17,6 +17,8 @@ def allowed_file(filename: str) -> str:
 @transcriber.route('/', methods=['GET', 'POST'])
 def upload_file() -> str:
     if request.method == 'POST':
+        return "test"
+        """
         # check if the post request has the file part
         if 'file' not in request.files:
             flash('No file part')
@@ -32,6 +34,7 @@ def upload_file() -> str:
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return redirect(url_for('uploaded_file',
                                     filename=filename))
+        """
     return render_template('index.html', title='index')
 
 
