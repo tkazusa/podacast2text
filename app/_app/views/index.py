@@ -38,12 +38,12 @@ def index() -> str:
 
 @transcriber.route('/upload', methods=['POST'])
 def upload():
-    uploaded_file = request.files.get('file')
+    uploaded_file = request.files['file']
     
     if not uploaded_file:
         return 'No file uploaded.', 400
 
-    return print(uploaded_file.read())
+    return print(uploaded_file.filename)
 
 
 @transcriber.route('/uploads/<filename>')
