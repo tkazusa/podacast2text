@@ -40,10 +40,10 @@ def index() -> str:
 def upload():
     uploaded_file = request.files['file']
     
-    if not uploaded_file:
+    if 'file' not in request.files:
         return 'No file uploaded.', 400
 
-    return print(uploaded_file.filename)
+    return uploaded_file.filename
 
 
 @transcriber.route('/uploads/<filename>')
