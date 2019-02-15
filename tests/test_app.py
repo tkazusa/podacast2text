@@ -10,6 +10,16 @@ def test_get_route(test_client):
     assert response.status_code == 200
 
 
+def test_post_route_with_no_file(test_client):
+    """
+    GIVEN a Flask application
+    WHEN the '/' page is requested (POST)
+    THEN check the response is BAD REQUEST
+    """
+    response = test_client.post('/upload')
+    assert response.status_code == 400 
+
+
 def test_not_found(test_client):
     """
     GIVEN a Flask application

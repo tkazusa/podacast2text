@@ -14,10 +14,8 @@ def allowed_file(filename: str) -> str:
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@transcriber.route('/', methods=['GET', 'POST'])
-def upload_file() -> str:
-    if request.method == 'POST':
-        return "test"
+@transcriber.route('/', methods=['GET'])
+def index() -> str:
         """
         # check if the post request has the file part
         if 'file' not in request.files:
@@ -35,7 +33,17 @@ def upload_file() -> str:
             return redirect(url_for('uploaded_file',
                                     filename=filename))
         """
-    return render_template('index.html', title='index')
+        return render_template('index.html', title='index')
+
+
+@transcriber.route('/upload', methods=['POST'])
+def upload():
+    uploaded_file = request.files.get('file')
+    
+    if not uploaded_file:
+        return 'No file uploaded.', 400
+
+    return print(uploaded_file.read())
 
 
 @transcriber.route('/uploads/<filename>')
