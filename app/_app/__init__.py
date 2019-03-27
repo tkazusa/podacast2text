@@ -1,9 +1,9 @@
 # -*- coding: UTF-8 -*-
 from flask import Flask
+
 from google.cloud import storage
 
 from .views.index import transcriber
-
 
 UPLOAD_FOLDER = '/path/to/the/uploads'
 
