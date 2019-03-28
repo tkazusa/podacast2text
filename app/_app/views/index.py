@@ -46,7 +46,6 @@ def upload() -> str:
     blob_filename = uploaded_file.filename
     upload_blob(bucket_name, uploaded_file, blob_filename)
 
-    msg = 'File {} uploaded to {}.'.format(
-        uploaded_file, blob_filename)
+    msg = 'File {} uploaded.'.format(blob_filename)
 
     return render_template('transcribe.html', message=msg)
