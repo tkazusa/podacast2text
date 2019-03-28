@@ -1,11 +1,12 @@
 # !/usr/bin/env python
 # coding: utf-8
 import argparse
-import io
-import sys
 import codecs
 import datetime
+import io
 import locale
+import sys
+
 
 def transcribe_gcs(gcs_uri):
     from google.cloud import speech_v1p1beta1 as speech
@@ -29,9 +30,10 @@ def transcribe_gcs(gcs_uri):
     fout = codecs.open('output{}.txt'.format(today), 'a', 'shift_jis')
 
     for result in operationResult.results:
-      for alternative in result.alternatives:
-          fout.write(u'{}\n'.format(alternative.transcript))
+        for alternative in result.alternatives:
+            fout.write(u'{}\n'.format(alternative.transcript))
     fout.close()
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -42,4 +44,3 @@ if __name__ == '__main__':
     args = parser.parse_args()
     print(args.path)
     transcribe_gcs(args.path)
-
