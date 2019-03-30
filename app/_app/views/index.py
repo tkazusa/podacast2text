@@ -48,4 +48,9 @@ def upload() -> str:
 
     msg = 'File {} uploaded.'.format(blob_filename)
 
-    return render_template('transcribe.html', message=msg)
+    return render_template('upload.html', message=msg)
+
+
+@transcriber.route('/transcribe', methods=['POST'])
+def transcribe() -> str:
+    return render_template('transcribe.html')
