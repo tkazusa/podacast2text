@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import flash, redirect, render_template, request, url_for
+from flask import flash, redirect, render_template, request
 from google.cloud import storage
 
 from . import transcriber
@@ -31,7 +31,7 @@ def upload_blob(bucket_name, uploaded_file, blob_filename):
     blob.upload_from_file(uploaded_file)
 
 
-@transcriber.route('/', methods=['GET'])
+@transcriber.route('/', methods=['GET', 'POST'])
 def index() -> str:
     return render_template('index.html', title='index')
 
@@ -50,11 +50,12 @@ def upload() -> str:
 
     blob_filename = uploaded_file.filename
     upload_blob(bucket_name, uploaded_file, blob_filename)
+    gcs_uri = 'gs://bp-speech/Talk_219_-_Solon_Barocas.flac'
 
     msg = 'File {} uploaded.'.format(blob_filename)
-    return render_template('upload.html', message=msg)
+    return render_template('upload.html', message=msg, gcs_uri=gcs_uri)
 
 
-@transcriber.route('/transcribe', methods=['POST'])
-def transcribe() -> str:
-    return render_template('transcribe.html')
+@transcriber.route('/transcribe/<gcs_uri>', methods=['POST'])
+def transcribe(gcs_uri) -> str:
+    return render_template('transcribe.html', gcs_uri=gcs_uri)
