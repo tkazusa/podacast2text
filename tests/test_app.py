@@ -13,11 +13,11 @@ def test_get_route(test_client):
     assert response.status_code == 200
 
 
-def test_post_upload_with_file(test_client):
+def test_post_upload_with_allowed_file(test_client):
     """
     GIVEN a Flask application
-    WHEN the '/upload' page is requested (POST) with files
-    THEN check the response is BAD REQUEST
+    WHEN the '/upload' page is requested (POST) with allowed files
+    THEN check the response is valid
     """
     response = test_client.post(
         '/upload',
@@ -29,6 +29,22 @@ def test_post_upload_with_file(test_client):
     assert response.status_code == 200
 
 
+def test_post_upload_with_not_allowed_file(test_client):
+    """
+    GIVEN a Flask application
+    WHEN the '/upload' page is requested (POST) with not allowed files
+    THEN check the response is valid
+    """
+    response = test_client.post(
+        '/upload',
+        data={
+            'file': (BytesIO(b'my file contents'), 'file.png')
+        }
+    )
+
+    assert response.status_code == 302
+
+
 def test_post_upload_with_no_file(test_client):
     """
     GIVEN a Flask application
@@ -37,7 +53,7 @@ def test_post_upload_with_no_file(test_client):
     """
     response = test_client.post('/upload')
 
-    assert response.status_code == 400
+    assert response.status_code == 302
 
 
 def test_post_transcribe(test_client):

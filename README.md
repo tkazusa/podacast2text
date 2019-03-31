@@ -6,6 +6,6 @@
 
 ```
 pip install '.[test]'
-pytest
+pytest -v
 ```
 

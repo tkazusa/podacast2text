@@ -1,11 +1,11 @@
-# -*- coding: UTF-8 -*-
-from flask import render_template, request
+# -*- coding: utf-8 -*-
+from flask import flash, redirect, render_template, request, url_for
 from google.cloud import storage
 
 from . import transcriber
 
 bucket_name = 'bp_yead'
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+ALLOWED_EXTENSIONS = set(['txt'])
 
 
 def allowed_file(filename: str) -> str:
@@ -41,13 +41,17 @@ def upload() -> str:
     uploaded_file = request.files.get('file')
 
     if 'file' not in request.files:
-        return 'No file uploaded.', 400
+        flash('No file uploaded')
+        return redirect(request.url, code=302)
+
+    if not allowed_file(uploaded_file.filename):
+        flash('Forbidden file type uploaded')
+        return redirect(request.url, code=302)
 
     blob_filename = uploaded_file.filename
     upload_blob(bucket_name, uploaded_file, blob_filename)
 
     msg = 'File {} uploaded.'.format(blob_filename)
-
     return render_template('upload.html', message=msg)
 
 
