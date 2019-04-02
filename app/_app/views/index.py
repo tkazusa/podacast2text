@@ -56,6 +56,6 @@ def upload() -> str:
     return render_template('upload.html', message=msg, gcs_uri=gcs_uri)
 
 
-@transcriber.route('/transcribe/<gcs_uri>', methods=['POST'])
+@transcriber.route('/transcribe', methods=['POST'])
 def transcribe(gcs_uri) -> str:
     return render_template('transcribe.html', gcs_uri=gcs_uri)
