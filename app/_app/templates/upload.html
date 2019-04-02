@@ -1,6 +1,8 @@
 <!doctype html>
 <title>Start transcribe the file</title>
 <h3>{{message}}</h3>
-<form method=post action='/transcribe/{{gcs_uri}}' enctype=multipart/form-data>
+<h3>{{gcs_uri}}</h3>
+<form method=post action='/transcribe' enctype=multipart/form-data>
   <input type=submit value=transcribe>
+  <input type=hidden name=gcs_url value={{gcs_uri}}>
 </form>
