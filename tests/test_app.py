@@ -63,7 +63,7 @@ def test_post_transcribe(test_client):
     THEN check the response is BAD REQUEST
     """
     gcs_uri = 'test'
-    response = test_client.post('/transcribe/%s' % gcs_uri)
+    response = test_client.post('/transcribe')
 
     assert response.status_code == 200
 
