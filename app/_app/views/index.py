@@ -57,5 +57,6 @@ def upload() -> str:
 
 
 @transcriber.route('/transcribe', methods=['POST'])
-def transcribe(gcs_uri) -> str:
+def transcribe() -> str:
+    gcs_uri = request.form['gcs_uri']
     return render_template('transcribe.html', gcs_uri=gcs_uri)
