@@ -5,9 +5,26 @@ from google.cloud.speech import enums, types
 
 from . import transcriber
 
+
+
 bucket_name = 'bp_yead'
 ALLOWED_EXTENSIONS = set(['txt'])
 
+
+def transcribe_gcs(gcs_uri):
+    """Asynchronously transcribes the audio file specified by the gcs_uri."""
+    client = speech.SpeechClient()
+
+    audio = types.RecognitionAudio(uri=gcs_uri)
+    config = types.RecognitionConfig(
+        encoding=enums.RecognitionConfig.AudioEncoding.FLAC,
+        sample_rate_hertz=16000,
+        language_code='en-US')
+
+    operation = client.long_running_recognize(config, audio)
+
+    response = operation.result()
+    return response
 
 def allowed_file(filename: str) -> str:
     """The allowed file names
@@ -30,22 +47,6 @@ def upload_blob(bucket_name, uploaded_file, blob_filename):
     blob = bucket.blob(blob_filename)
 
     blob.upload_from_file(uploaded_file)
-
-
-def transcribe_gcs(gcs_uri: str) -> str:
-    """Asynchronously transcribes the audio file specified by the gcs_uri."""
-    client = speech.SpeechClient()
-
-    audio = types.RecognitionAudio(uri=gcs_uri)
-    config = types.RecognitionConfig(
-        encoding=enums.RecognitionConfig.AudioEncoding.FLAC,
-        sample_rate_hertz=16000,
-        language_code='en-US')
-
-    operation = client.long_running_recognize(config, audio)
-
-    response = operation.result()
-    return response
 
 
 @transcriber.route('/', methods=['GET', 'POST'])
@@ -75,13 +76,5 @@ def upload() -> str:
 
 @transcriber.route('/transcribe', methods=['POST'])
 def transcribe() -> str:
-    # gcs_uri = request.form['gcs_uri']
-    gcs_uri = 'gs://bp-speech/Talk-219_-Solon_Barocas.flac'
-    response = transcribe_gcs(gcs_uri)
-
-    tmp = []
-    for result in response.results:
-        # The first alternative is the most likely one for this portion.
-        tmp.append(result.alternatives[0].transcript)
-
-    return render_template('transcribe.html', tmp=tmp)
+    gcs_uri = request.form['gcs_uri']
+    return render_template('transcribe.html', gcs_uri=gcs_uri)
