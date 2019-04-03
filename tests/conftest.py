@@ -20,3 +20,4 @@ def test_client(app):
 def test_data():
     with open("test.flac", "w"):
         pass
+    
