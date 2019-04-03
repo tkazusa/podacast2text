@@ -76,7 +76,8 @@ def upload() -> str:
 @transcriber.route('/transcribe', methods=['POST'])
 def transcribe() -> str:
     gcs_uri = request.form['gcs_uri']
-    # gcs_uri = 'gs://bp-speech/test.flac'
+    print(gcs_uri)
+    gcs_uri = 'gs://bp-speech/test2.flac'
     flash('Starts transcription')
     response = transcribe_gcs(gcs_uri)
     flash('doing something')
