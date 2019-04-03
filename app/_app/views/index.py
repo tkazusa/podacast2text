@@ -67,7 +67,7 @@ def upload() -> str:
 
     blob_filename = uploaded_file.filename
     upload_blob(bucket_name, uploaded_file, blob_filename)
-    gcs_uri = 'gs://' + bucket_name + blob_filename
+    gcs_uri = 'gs://' + bucket_name + '/' + blob_filename
 
     msg = 'File {} uploaded.'.format(blob_filename)
     return render_template('upload.html', message=msg, gcs_uri=gcs_uri)
