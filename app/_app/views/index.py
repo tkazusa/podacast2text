@@ -5,7 +5,7 @@ from google.cloud.speech import enums, types
 
 from . import transcriber
 
-bucket_name = 'bp_yead'
+bucket_name = 'bp-speech'
 ALLOWED_EXTENSIONS = set(['flac'])
 
 
