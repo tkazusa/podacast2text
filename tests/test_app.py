@@ -24,7 +24,7 @@ def test_post_upload_with_allowed_file(test_client):
     response = test_client.post(
         '/upload',
         data={
-            'file': (BytesIO(b'my file contents'), 'file.txt')
+            'file': (BytesIO(b'my file contents'), 'file.flac')
         }
     )
 

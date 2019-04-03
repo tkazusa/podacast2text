@@ -6,7 +6,7 @@ from google.cloud.speech import enums, types
 from . import transcriber
 
 bucket_name = 'bp_yead'
-ALLOWED_EXTENSIONS = set(['txt'])
+ALLOWED_EXTENSIONS = set(['flac'])
 
 
 def allowed_file(filename: str) -> str:
@@ -75,8 +75,8 @@ def upload() -> str:
 
 @transcriber.route('/transcribe', methods=['POST'])
 def transcribe() -> str:
-    # gcs_uri = request.form['gcs_uri']
-    gcs_uri = 'gs://bp-speech/test.flac'
+    gcs_uri = request.form['gcs_uri']
+    # gcs_uri = 'gs://bp-speech/test.flac'
     flash('Starts transcription')
     response = transcribe_gcs(gcs_uri)
     flash('doing something')
