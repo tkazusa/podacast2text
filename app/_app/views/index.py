@@ -67,7 +67,7 @@ def upload() -> str:
 
     blob_filename = uploaded_file.filename
     upload_blob(bucket_name, uploaded_file, blob_filename)
-    gcs_uri = 'gs:' + bucket_name + blob_filename
+    gcs_uri = 'gs://' + bucket_name + blob_filename
 
     msg = 'File {} uploaded.'.format(blob_filename)
     return render_template('upload.html', message=msg, gcs_uri=gcs_uri)
@@ -77,7 +77,7 @@ def upload() -> str:
 def transcribe() -> str:
     gcs_uri = request.form['gcs_uri']
     print(gcs_uri)
-    gcs_uri = 'gs://bp-speech/test2.flac'
+    # gcs_uri = 'gs://bp-speech/test2.flac'
     flash('Starts transcription')
     response = transcribe_gcs(gcs_uri)
     flash('doing something')
