@@ -14,3 +14,10 @@ def app():
 def test_client(app):
     testing_client = app.test_client()
     return testing_client
+
+
+@pytest.fixture()
+def test_data():
+    with open("test.flac", "w"):
+        pass
+    

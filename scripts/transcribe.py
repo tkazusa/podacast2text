@@ -1,37 +1,38 @@
-# !/usr/bin/env python
 # coding: utf-8
 import argparse
-import io
-import sys
 import codecs
 import datetime
-import locale
+
 
 def transcribe_gcs(gcs_uri):
-    from google.cloud import speech_v1p1beta1 as speech
+    """Asynchronously transcribes the audio file specified by the gcs_uri."""
+    from google.cloud import speech
+    from google.cloud.speech import enums
+    from google.cloud.speech import types
     client = speech.SpeechClient()
 
-    audio = speech.types.RecognitionAudio(uri=gcs_uri)
-    config = speech.types.RecognitionConfig(
-        encoding=speech.enums.RecognitionConfig.AudioEncoding.FLAC,
-        language_code='en-US',
-        enable_speaker_diarization=True,
-        diarization_speaker_count=2,
-        enable_automatic_punctuation=True)
+    audio = types.RecognitionAudio(uri=gcs_uri)
+    config = types.RecognitionConfig(
+        encoding=enums.RecognitionConfig.AudioEncoding.FLAC,
+        sample_rate_hertz=16000,
+        language_code='en-US')
 
     operation = client.long_running_recognize(config, audio)
 
     print('Waiting for operation to complete...')
-    operationResult = operation.result()
+    response = operation.result()
+    print('done')
+    print(response)
+    print("="*20)
+    print(response.results)
 
-    d = datetime.datetime.today()
-    today = d.strftime("%Y%m%d-%H%M%S")
-    fout = codecs.open('output{}.txt'.format(today), 'a', 'shift_jis')
+    # Each result is for a consecutive portion of the audio. Iterate through
+    # them to get the transcripts for the entire audio file.
+    for result in response.results:
+        # The first alternative is the most likely one for this portion.
+        print(u'Transcript: {}'.format(result.alternatives[0].transcript))
+        print('Confidence: {}'.format(result.alternatives[0].confidence))
 
-    for result in operationResult.results:
-      for alternative in result.alternatives:
-          fout.write(u'{}\n'.format(alternative.transcript))
-    fout.close()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -42,4 +43,3 @@ if __name__ == '__main__':
     args = parser.parse_args()
     print(args.path)
     transcribe_gcs(args.path)
-
