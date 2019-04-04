@@ -9,21 +9,21 @@ bucket_name = 'bp-speech'
 ALLOWED_EXTENSIONS = set(['flac'])
 
 
-def allowed_file(filename: str) -> str:
+def _allowed_file(filename: str) -> str:
     """The allowed file names
     Args:
-        filename (str): filename
+        filename (str): filename.
     """
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def upload_blob(bucket_name, uploaded_file, blob_filename):
+def _upload_blob(bucket_name, uploaded_file, blob_filename):
     """Uploads a file to the bucket.
     Args:
-        bucket_name (str): The bucket path on GCS
-        uploaded_file : file object from post request
-        blob_filename (str): filename of the destination blob
+        bucket_name (str): The bucket path on GCS.
+        uploaded_file : file object from post request.
+        blob_filename (str): filename of the destination blob.
     """
     storage_client = storage.Client()
     bucket = storage_client.get_bucket(bucket_name)
@@ -32,8 +32,11 @@ def upload_blob(bucket_name, uploaded_file, blob_filename):
     blob.upload_from_file(uploaded_file)
 
 
-def transcribe_gcs(gcs_uri: str) -> str:
-    """Asynchronously transcribes the audio file specified by the gcs_uri."""
+def _transcribe_gcs(gcs_uri: str) -> str:
+    """Asynchronously transcribes the audio file specified by the gcs_uri.
+    Args:
+        gcs_uril (str): The file path on Google cloud storage.
+    """
     client = speech.SpeechClient()
 
     audio = types.RecognitionAudio(uri=gcs_uri)
@@ -61,12 +64,12 @@ def upload() -> str:
         flash('No file uploaded')
         return redirect(request.url, code=302)
 
-    if not allowed_file(uploaded_file.filename):
+    if not _allowed_file(uploaded_file.filename):
         flash('Forbidden file type uploaded')
         return redirect(request.url, code=302)
 
     blob_filename = uploaded_file.filename
-    upload_blob(bucket_name, uploaded_file, blob_filename)
+    _upload_blob(bucket_name, uploaded_file, blob_filename)
     gcs_uri = 'gs://' + bucket_name + '/' + blob_filename
 
     msg = 'File {} uploaded.'.format(blob_filename)
@@ -76,10 +79,8 @@ def upload() -> str:
 @transcriber.route('/transcribe', methods=['POST'])
 def transcribe() -> str:
     gcs_uri = request.form['gcs_uri']
-    print(gcs_uri)
-    # gcs_uri = 'gs://bp-speech/test2.flac'
     flash('Starts transcription')
-    response = transcribe_gcs(gcs_uri)
+    response = _transcribe_gcs(gcs_uri)
     flash('doing something')
 
     tmp = []
