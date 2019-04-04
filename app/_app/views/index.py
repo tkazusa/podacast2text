@@ -76,16 +76,15 @@ def upload() -> str:
     return render_template('upload.html', message=msg, gcs_uri=gcs_uri)
 
 
-@transcriber.route('/transcribe', methods=['POST'])
+@transcriber.route('/result', methods=['POST'])
 def transcribe() -> str:
-    gcs_uri = request.form['gcs_uri']
-    flash('Starts transcription')
+    # gcs_uri = request.form['gcs_uri']
+    gcs_uri = 'gs://bp-speech/test.flac'
     response = _transcribe_gcs(gcs_uri)
-    flash('doing something')
 
     tmp = []
     for result in response.results:
         # The first alternative is the most likely one for this portion.
         tmp.append(result.alternatives[0].transcript)
 
-    return render_template('transcribe.html', tmp=tmp)
+    return render_template('result.html', tmp=tmp)

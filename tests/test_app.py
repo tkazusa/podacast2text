@@ -2,6 +2,8 @@
 from io import BytesIO
 
 import pytest
+from google.cloud import speech, storage
+from google.cloud.speech import enums, types
 
 
 def test_get_route(test_client):
@@ -35,7 +37,7 @@ def test_post_upload_with_not_allowed_file(test_client):
     """
     GIVEN a Flask application
     WHEN the '/upload' page is requested (POST) with not allowed files
-    THEN check the response is valid
+    THEN check the response is FOUND
     """
     response = test_client.post(
         '/upload',
@@ -51,21 +53,33 @@ def test_post_upload_with_no_file(test_client):
     """
     GIVEN a Flask application
     WHEN the '/upload' page is requested (POST) without files
-    THEN check the response is BAD REQUEST
+    THEN check the response is FOUND
     """
     response = test_client.post('/upload')
 
     assert response.status_code == 302
 
 
-@pytest.mark.skip(reason='hard to prepare flac data')
+@pytest.mark.skip(reason='time comsuming')
 def test_post_transcribe(test_client):
     """
     GIVEN a Flask application
     WHEN the '/transcribe' page is requested (POST)
-    THEN check the response is BAD REQUEST
+    THEN check the response is valid 
     """
-    gcs_uri = 'test'
+    # Upload a test flac file to the GCS bucket from local dir
+    bucket_name = 'bp-speech'
+    blob_filepath = 'test.flac'
+    local_filepath = 'dat/test.flac'
+
+    storage_client = storage.Client()
+    bucket = storage_client.get_bucket(bucket_name)
+    blob = bucket.blob(blob_filepath)
+
+    blob.upload_from_filename(filename=local_filepath)
+
+    # test post request with .flac filepath on gcs
+    gcs_uri = 'gs://' + bucket_name + '/' + blob_filepath
     response = test_client.post('/transcribe',
                                 data={'gcs_uri': gcs_uri})
 
